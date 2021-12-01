@@ -4,7 +4,7 @@ function calc() {
 	const numbers = input.match(/\d+/g).map(Number);
 
 	const countIncreasing = (a) =>
-		a.reduce((s, e, i) => s + (e > (a[i - 1] || e)), 0);
+		a.reduce((s, e, i) => s + (e > a[i - 1]), 0);
 
 	const part1 = countIncreasing(numbers);
 
