@@ -3,16 +3,11 @@
 function calc() {
 	const numbers = input.match(/\d+/g).map(Number);
 
-	const countIncreasing = (a) =>
-		a.reduce((s, e, i) => s + (e > a[i - 1]), 0);
+	const countIncreasing = (a, windowSize = 1) =>
+		a.reduce((s, e, i) => s + (e > a[i - windowSize]), 0);
 
 	const part1 = countIncreasing(numbers);
-
-	const mapSlidingWindow = (a) =>
-		a.map((e, i) => i >= 2 ? e + a[i - 1] + a[i - 2] : null)
-		.filter(e => e);
-
-	const part2 = countIncreasing(mapSlidingWindow(numbers));
+	const part2 = countIncreasing(numbers, 3);
 
 	return part1 + ' ' + part2;
 }
