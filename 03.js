@@ -32,9 +32,9 @@ function getMostCommonBits(numbers) {
 	const counts = [];
 
 	numbers.forEach(e =>
-		e.forEach((b, i) => counts[i] = (counts[i] || 0) + b));
+		e.forEach((b, i) => counts[i] = (counts[i] || 0) + (b ? 1 : -1)));
 
-	return counts.map(e => +(e >= numbers.length / 2));
+	return counts.map(e => +(e >= 0));
 }
 
 const input = `101000111100
