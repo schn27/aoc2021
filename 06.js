@@ -3,25 +3,24 @@
 function calc() {
 	const fishs = input.match(/\d+/g);
 	fishs.sort();
+	const groups = fishs.join('').match(/(.)\1*/g).map(g => [+g[0], g.length]);
 
-	const generation = [
-		0,
-		...fishs.join('').match(/(.)\1*/g).map(g => g.length),
-		0, 0, 0];
+	const timers = new Array(9).fill(0);
+	groups.forEach(g => timers[g[0]] = g[1]);
 
 	let part1 = 0;
 
-	for (let year = 0; year < 256; ++year) {
-		if (year == 80) {
-			part1 = generation.reduce((a, e) => a + e, 0)
+	for (let day = 0; day < 256; ++day) {
+		if (day == 80) {
+			part1 = timers.reduce((a, e) => a + e, 0)
 		}
 
-		const z = generation.shift();
-		generation.push(z);
-		generation[6] += z;
+		const z = timers.shift();
+		timers.push(z);
+		timers[6] += z;
 	}
 
-	const part2 = generation.reduce((a, e) => a + e, 0);
+	const part2 = timers.reduce((a, e) => a + e, 0);
 
 	return part1 + ' ' + part2;
 }
