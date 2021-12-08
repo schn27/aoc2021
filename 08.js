@@ -1,68 +1,46 @@
 "use strict";
 
 function calc() {
-	const entries = input.split('\n').map(s =>
-		s.split('|').map(e => e.match(/\w+/g).map(w => w.split(''))));
+	const entries = input.split('\n').map(s => s.split('|').
+		map(e => e.match(/\w+/g).map(w => w.split('').sort().join(''))));
 
 	const part1 = entries.reduce((a, e) =>
 		a + e[1].filter(p => p.length != 5 && p.length != 6).length, 0);
 
 	const part2 = entries.reduce((a, e) => {
 		const map = getDecodeMap(e[0]);
-		return a + +e[1].map(d => getDecodedDigit(map, d)).join('');
+		return a + +e[1].map(d => map[d]).join('');
 	}, 0);
 
 	return part1 + ' ' + part2;
 }
 
 function getDecodeMap(u) {
+	const d1 = u.find(e => e.length == 2);
+	const d4 = u.find(e => e.length == 4);
+	const d7 = u.find(e => e.length == 3);
+
+	const d069 = u.filter(e => e.length == 6);
+	const d235 = u.filter(e => e.length == 5);
+
+	const d3 = d235.find(e =>
+		e.indexOf(d1[0]) >= 0 && e.indexOf(d1[1]) >= 0);
+
+	const d6 = d069.find(e =>
+		e.indexOf(d1[0]) < 0 || e.indexOf(d1[1]) < 0);
+
+	const d5 = d235.find(e =>
+		d6.split('').filter(c => e.indexOf(c) < 0).length == 1);
+
+	const d9 = d069.filter(e => e != d6).find(e =>
+		d5.split('').filter(c => e.indexOf(c) < 0).length == 0);
+
+	const d0 = d069.find(e => e != d6 && e != d9);
+	const d2 = d235.find(e => e != d3 && e != d5);
+
 	const map = {};
-
-	const d1 = u.find(p => p.length == 2);
-	const d7 = u.find(p => p.length == 3);
-
-	const d6 = u.find(p => p.length == 6 &&
-		(p.indexOf(d1[0]) < 0 || p.indexOf(d1[1]) < 0));
-
-	const d5 = u.find(p => p.length == 5 &&
-		d6.filter(c => p.indexOf(c) < 0).length == 1);
-
-	map['a'] = d7.find(c => d1.indexOf(c) < 0);
-	map['c'] = d1.find(c => d6.indexOf(c) < 0);
-	map['f'] = d1.find(c => d6.indexOf(c) >= 0);
-	map['e'] = d6.find(c => d5.indexOf(c) < 0);
-
-	const d3 = u.find(p => p.length == 5 &&
-		p.indexOf(map['c']) >= 0 && p.indexOf(map['f']) >= 0);
-
-	map['b'] = d6.find(c => d3.indexOf(c) < 0 && c != map['e']);
-
-	const d0 = u.find(p => p.length == 6 &&
-		p.indexOf(map['c']) >= 0 && p.indexOf(map['e']) >= 0);
-
-	map['d'] = 'abcdefg'.split('').find(c => d0.indexOf(c) < 0);
-	map['g'] = 'abcdefg'.split('').find(c => Object.values(map).indexOf(c) < 0);
-
-	const invmap = {};
-	Object.keys(map).forEach(k => invmap[map[k]] = k);
-	return invmap;
-}
-
-function getDecodedDigit(map, segments) {
-	const digits = [
-		'abcefg',
-		'cf',
-		'acdeg',
-		'acdfg',
-		'bcdf',
-		'abdfg',
-		'abdefg',
-		'acf',
-		'abcdefg',
-		'abcdfg'
-	];
-
-	return digits.indexOf(segments.map(c => map[c]).sort().join(''));
+	[d0, d1, d2, d3, d4, d5, d6, d7, 'abcdefg', d9].forEach((e, i) => map[e] = i);
+	return map;
 }
 
 const input = `cbgefad agc fdega cgdf ecdgfa efgca gaefbd edagbc cg ecafb | cdgafbe cfdg cg gac
