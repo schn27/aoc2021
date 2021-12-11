@@ -22,8 +22,8 @@ function calc() {
 						[y, x - 1], [y, x + 1],
 						[y + 1, x - 1], [y + 1, x], [y + 1, x + 1]];
 
-					neighbors.filter(yx => (map[yx[0]] || [])[yx[1]] > 0)
-						.forEach(yx => ++map[yx[0]][yx[1]]);
+					neighbors.filter(([yy, xx]) => (map[yy] || [])[xx] > 0)
+						.forEach(([yy, xx]) => ++map[yy][xx]);
 				}
 			}));
 		}
