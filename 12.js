@@ -6,84 +6,35 @@ function calc() {
 	const links = {};
 
 	list.forEach(([from, to]) => {
-		if (!links[from]) {
-			links[from] = [];
-		}
-
-		if (!links[to]) {
-			links[to] = [];
-		}
-
+		links[from] = links[from] || [];
 		links[from].push(to);
+		links[to] = links[to] || [];
 		links[to].push(from);
 	});
 
-	const part1 = getPaths(links)
-	const part2 = getPaths(links, true)
+	const part1 = getPaths(['start'], links);
+	const part2 = getPaths(['start'], links, true);
 
 	return part1 + ' ' + part2;
 }
 
-function getPaths(links, allowTwice = false) {
-	const queue = new Queue();
-	queue.put(['start']);
+function getPaths(path, links, allowTwice = false) {
+	let n = 0;
+	const cave = path[path.length - 1];
 
-	let paths = 0;
-
-	while (queue.getLength() != 0) {
-		const path = queue.get();
-
-		const cave = path[path.length - 1];
-
-		links[cave].forEach(e => {
-			if (e == 'end') {
-				++paths;
-			} else if (e != 'start') {
-				if (e.match(/[a-z]+/) && path.indexOf(e) >= 0) {
-					if (allowTwice && path[0] != '+') {
-						queue.put(['+', ...path, e]);
-					}
-				} else {
-					queue.put([...path, e]);
-				}
+	links[cave].forEach(e => {
+		if (e == 'end') {
+			++n;
+		} else if (e != 'start') {
+			if (!e.match(/[a-z]+/) || path.indexOf(e) < 0) {
+				n += getPaths([...path, e], links, allowTwice);
+			} else if (allowTwice) {
+				n += getPaths([...path, e], links, false);
 			}
-		});
-	}
-
-	return paths;
-}
-
-class Queue {
-	constructor() {
-		this.head = null;
-		this.tail = null;
-		this.length = 0;
-	}
-
-	put(value) {
-		const node = {value: value, next: null};
-
-		if (this.head) {
-			this.tail.next = node;
-			this.tail = node;
-		} else {
-			this.head = node;
-			this.tail = node;
 		}
+	});
 
-		++this.length;
-	}
-
-	get() {
-		const current = this.head;
-		this.head = this.head.next;
-		--this.length;
-		return current.value;
-	}
-
-	getLength() {
-		return this.length;
-	}
+	return n;
 }
 
 const input = `yb-start
