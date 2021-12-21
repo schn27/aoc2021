@@ -45,7 +45,7 @@ function getPart2(state) {
 
 	const player = state.turn % state.pos.length;
 
-	combinations.map(c => {
+	combinations.forEach(c => {
 		const newState = {
 			pos: [...state.pos],
 			score: [...state.score],
